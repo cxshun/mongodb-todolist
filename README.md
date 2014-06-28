@@ -1,4 +1,6 @@
 mongodb-todolist
 ================
 
-Todolist using mongodb as storage
+Using the original j2ee - servlets and jsp to do the simple todolist.
+
+Using mongodb as storage.
