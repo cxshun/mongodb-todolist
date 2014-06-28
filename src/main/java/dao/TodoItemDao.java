@@ -47,7 +47,7 @@ public class TodoItemDao {
         object.put("deleted", TodoConstants.DeleteFlag.NOT_DELETED);
         object.put("predictFinishTime", todoItem.getPredictFinishTime());
         object.put("createTime", new Date().getTime());
-        object.put("modifyTIme", new Date().getTime())
+        object.put("modifyTIme", new Date().getTime());
 
         WriteResult wr = dbCollection.insert(object);
         return wr.getN() > 0;
