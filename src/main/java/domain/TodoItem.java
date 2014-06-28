@@ -1,5 +1,7 @@
 package domain;
 
+import java.lang.String;
+
 /**
  * every todo item in list
  * @author chenxs
@@ -9,7 +11,7 @@ public class TodoItem {
 	/**
 	 * primary key of the item
 	 */
-	private int id;
+	private String id;
 	
 	/**
 	 * title about the item
@@ -40,21 +42,47 @@ public class TodoItem {
 	 * is finished or not
 	 * 1 means finished,while 0 means not finished,still in progress
 	 */
-	private int isFinished;
-	
-	public int getIsFinished() {
-		return isFinished;
-	}
+	private int finished;
 
-	public void setIsFinished(int isFinished) {
-		this.isFinished = isFinished;
-	}
+    /**
+     * identify the whether the task has been deleted
+     */
+    private int deleted;
 
-	public int getId() {
+    /**
+     * predict finish time about the task
+     */
+    private long predictFinishTime;
+
+    public long getPredictFinishTime() {
+        return predictFinishTime;
+    }
+
+    public void setPredictFinishTime(long predictFinishTime) {
+        this.predictFinishTime = predictFinishTime;
+    }
+
+    public int getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(int deleted) {
+        this.deleted = deleted;
+    }
+
+    public int getFinished() {
+        return finished;
+    }
+
+    public void setFinished(int finished) {
+        this.finished = finished;
+    }
+
+    public String setId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
@@ -97,7 +125,5 @@ public class TodoItem {
 	public void setModifyTime(long modifyTime) {
 		this.modifyTime = modifyTime;
 	}
-	
-	
-	
+
 }
