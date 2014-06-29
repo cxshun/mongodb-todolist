@@ -38,7 +38,12 @@ public class TodoItemDao {
         }
     }
 
-    public boolean create(TodoItem todoItem) throws UnknownHostException {
+    /**
+     * create a new todoItem
+     * @param todoItem
+     * @return
+     */
+    public boolean create(TodoItem todoItem) {
         DBObject object = new BasicDBObject();
         object.put("title", todoItem.getTitle());
         object.put("content", todoItem.getContent());
@@ -46,25 +51,43 @@ public class TodoItemDao {
         object.put("finished", TodoConstants.FinishFlag.NOT_FINISHED);
         object.put("deleted", TodoConstants.DeleteFlag.NOT_DELETED);
         object.put("predictFinishTime", todoItem.getPredictFinishTime());
-        object.put("createTime", new Date().getTime());
-        object.put("modifyTIme", new Date().getTime());
+        object.put("createTime", todoItem.getCreateTime());
+        object.put("modifyTIme", todoItem.getModifyTime());
 
         WriteResult wr = dbCollection.insert(object);
         return wr.getN() > 0;
     }
 
+    /**
+     * update todoItem's content
+     * here we retrieve the old item from the mongodb in order to get the createTime
+     * then set it to the new item,make it like update operation
+     * @param todoItem
+     * @return
+     */
     public boolean update(TodoItem todoItem) {
         DBObject object = new BasicDBObject();
         object.put("id", todoItem);
 
+        //set old createTime to the new object,in order to make it like update
+        DBObject existedObject = dbCollection.findOne(object);
+        todoItem.setCreateTime(Long.valueOf(existedObject.get("createTime").toString()));
+
         WriteResult wr = dbCollection.remove(object);
         if (wr.getN() > 0) {
-            return dbCollection.insert().getN() > 0;
+            return create(todoItem);
         }
         return false;
     }
 
-    public boolean delete(int id) {
+    /**
+     * delete a todoitem
+     * just make deleted mark to 1
+     * not physically delete
+     * @param id
+     * @return
+     */
+    public boolean delete(String id) {
         DBObject object = new BasicDBObject();
         object.put("id", id);
 
@@ -72,6 +95,16 @@ public class TodoItemDao {
         return wr.getN() > 0;
     }
 
+    /**
+     * get todoitem list by days
+     * for 1,only return today's todoitem list
+     * for 2,return yesterday's and today's
+     * etc.
+     * @param days  days that need to be retrieve
+     * @param finished whether or not to get the finished item
+     * @return
+     * @throws ParseException
+     */
     public List<TodoItem> getList(int days, int finished) throws ParseException {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DAY_OF_MONTH, -days);
@@ -79,10 +112,12 @@ public class TodoItemDao {
         cal.getTimeInMillis();
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        Date startDate = sdf.parse(cal.get(Calendar.YEAR) + "-" + cal.get(Calendar.MONTH) + "-" + cal.get(Calendar.DAY_OF_MONTH));
+        Date startDate = sdf.parse(cal.get(Calendar.YEAR) + "-" + cal.get(Calendar.MONTH) + "-" + cal.get(Calendar.DAY_OF_MONTH)
+            +" 00:00:00");
 
         cal = Calendar.getInstance();
-        Date endDate = sdf.parse(cal.get(Calendar.YEAR) + "-" + cal.get(Calendar.MONTH) + "-" + cal.get(Calendar.DAY_OF_MONTH));
+        Date endDate = sdf.parse(cal.get(Calendar.YEAR) + "-" + cal.get(Calendar.MONTH) + "-" + (cal.get(Calendar.DAY_OF_MONTH) + 1)
+            + " 00:00:00");
 
         DBObject object = new BasicDBObject();
         BasicDBList basicDBList = new BasicDBList();
