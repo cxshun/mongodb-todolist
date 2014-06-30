@@ -47,7 +47,7 @@ public class TodoItemService {
      * @param days
      * @param finished
      * @return
-     * @throws ParseException
+     * @throws java.text.ParseException
      */
     public List<TodoItem> getList(int days,int finished) throws ParseException {
         return todoItemDao.getList(days, finished);

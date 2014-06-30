@@ -103,7 +103,7 @@ public class TodoItemDao {
      * @param days  days that need to be retrieve
      * @param finished whether or not to get the finished item
      * @return
-     * @throws ParseException
+     * @throws java.text.ParseException
      */
     public List<TodoItem> getList(int days, int finished) throws ParseException {
         Calendar cal = Calendar.getInstance();
