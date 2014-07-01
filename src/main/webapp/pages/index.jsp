@@ -8,12 +8,13 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="/dateTags" prefix="date" %>
 <html>
   <head>
     <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap-theme.min.css" />
     <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css" />
-    <script type="text/javascript" src="../assets/bootstrap/js/bootstrap.min.js" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <script type="text/javascript" src="../assets/bootstrap/js/bootstrap.min.js" ></script>
+    <meta name="viewport" content="width=device-width,initial-scale=1" >
     <title>Tiny todolist</title>
   </head>
   <body>
@@ -21,11 +22,11 @@
         <ul class="nav nav-tabs" id="content">
             <li class="active" id="today">
                 <table class="table table-striped">
-                    <c:forEach items="todoItemList" var="todoItem">
+                    <c:forEach items="${todoItemList}" var="todoItem">
                         <tr>
                             <td><input type="checkbox" onclick="click2Finish(${todoItem.id})"/></td>
                             <td>${todoItem.title}</td>
-                            <td><fmt:formatDate pattern="yyyy-MM-dd" value="${todoItem.finishedTime}" /></td>
+                            <td><date:timeStamp2Date value="${todoItem.predictFinishTime}" pattern="yyyy-MM-dd" /></td>
                             <td><span class="glyphicon glyphicon-remove" onclick="click2Delete(${todoItem.id})"/></td>
                         </tr>
                     </c:forEach>
