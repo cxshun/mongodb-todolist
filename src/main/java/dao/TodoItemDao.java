@@ -122,8 +122,8 @@ public class TodoItemDao {
         DBObject object = new BasicDBObject();
         BasicDBList basicDBList = new BasicDBList();
 
-        basicDBList.add(new BasicDBObject("createTime", new BasicDBObject("$ge", startDate.getTime())));
-        basicDBList.add(new BasicDBObject("modifyTime", new BasicDBObject("$le", endDate.getTime())));
+        basicDBList.add(new BasicDBObject("createTime", new BasicDBObject("$gte", startDate.getTime())));
+        basicDBList.add(new BasicDBObject("modifyTime", new BasicDBObject("$lte", endDate.getTime())));
 
         object.put("$or", basicDBList);
         object.put("deleted", TodoConstants.DeleteFlag.NOT_DELETED);

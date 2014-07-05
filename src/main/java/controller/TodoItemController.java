@@ -66,6 +66,8 @@ public class TodoItemController extends HttpServlet{
         }
 
         req.setAttribute("todoItemList", todoItemList);
-        req.getRequestDispatcher("").forward(req, resp);
+        req.setAttribute("days", days);
+        req.setAttribute("finished", finished);
+        req.getRequestDispatcher("/WEB-INF/pages/index.jsp").forward(req, resp);
     }
 }

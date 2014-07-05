@@ -11,11 +11,12 @@
 <%@ taglib uri="/dateTags" prefix="date" %>
 <html>
   <head>
-    <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap-theme.min.css" />
-    <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css" />
-    <script type="text/javascript" src="../assets/js/jquery-1.8.2.min.js" ></script>
-    <script type="text/javascript" src="../assets/bootstrap/js/bootstrap.min.js" ></script>
-    <script type="text/javascript" src="../assets/js/main.js"></script>
+    <link rel="stylesheet" href='<c:url value="/assets/bootstrap/css/bootstrap-theme.min.css" />' />
+    <link rel="stylesheet" href='<c:url value="/assets/bootstrap/css/bootstrap.min.css" /> '/>
+    <script type="text/javascript" src='<c:url value="/assets/js/jquery-1.8.2.min.js" />' ></script>
+    <script type="text/javascript" src='<c:url value="/assets/js/jquery.form.js" />' ></script>
+    <script type="text/javascript" src='<c:url value="/assets/bootstrap/js/bootstrap.min.js" />' ></script>
+    <script type="text/javascript" src='<c:url value="/assets/js/main.js" />' ></script>
     <meta name="viewport" content="width=device-width,initial-scale=1" >
     <title>Tiny todolist</title>
   </head>
@@ -48,11 +49,11 @@
                 </table>
             </li>
         </ul>
-        <button type="button" class="btn btn-lg btn-primary" data-toggle="modal" data-target="#addForm">Add task</button>
+        <button type="button" class="btn btn-lg btn-primary" data-toggle="modal" data-target="#createDialog">Add task</button>
     </div>
 
 
-    <div class="modal fade" id="addForm" name="addForm" role="dialog">
+    <div class="modal fade" role="dialog" id="createDialog">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -60,20 +61,22 @@
                     <h4 class="modal-title">Add Task</h4>
                 </div>
                 <div class="modal-body">
-                    <form role="form">
+                    <form role="form" id="createForm" name="createForm" action='<c:url value="/todoItem?action=create" />' />
                         <div class="form-group">
                             <label for="title">Title</label>
-                            <input type="text" class="form-control" id="title" placeholder="Input title" />
+                            <input type="text" class="form-control" name="title" id="title" placeholder="Input title" />
                         </div>
                         <div class="form-group">
                             <label for="content">Content</label>
-                            <textarea class="form-control" id="content" placeholder="Input content" ></textarea>
+                            <textarea class="form-control" name="content" id="content" placeholder="Input content" ></textarea>
                         </div>
+                        <input type="hidden" value="${days}" name="days" />
+                        <input type="hidden" value="${finished}" name="finished" />
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" onclick="click2Save()">Save</button>
+                    <button type="submit" class="btn btn-primary" onclick="$('#createForm').submit()">Save</button>
                 </div>
             </div>
         </div>
