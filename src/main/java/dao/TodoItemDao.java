@@ -24,15 +24,14 @@ import java.util.*;
  */
 public class TodoItemDao {
 
-    private static DBCollection dbCollection = null;
+    private static DB db = null;
 
-    private static Gson gson = new Gson();
+    private Gson gson = new Gson();
 
     static {
         try {
-            MongoClient client = new MongoClient();
-            DB db = client.getDB(TodoConstants.DB_NAME);
-            dbCollection = db.getCollection(TodoConstants.COLLECTION_NAME);
+            MongoClient client = new MongoClient("localhost", 27017);
+            db = client.getDB(TodoConstants.DB_NAME);
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
@@ -52,10 +51,10 @@ public class TodoItemDao {
         object.put("deleted", TodoConstants.DeleteFlag.NOT_DELETED);
         object.put("predictFinishTime", todoItem.getPredictFinishTime());
         object.put("createTime", todoItem.getCreateTime());
-        object.put("modifyTIme", todoItem.getModifyTime());
+        object.put("modifyTime", todoItem.getModifyTime());
 
-        WriteResult wr = dbCollection.insert(object);
-        return wr.getN() > 0;
+        db.getCollection(TodoConstants.COLLECTION_NAME).insert(object);
+        return true;
     }
 
     /**
@@ -69,15 +68,13 @@ public class TodoItemDao {
         DBObject object = new BasicDBObject();
         object.put("id", todoItem);
 
+        DBCollection dbCollection = db.getCollection(TodoConstants.COLLECTION_NAME);
         //set old createTime to the new object,in order to make it like update
         DBObject existedObject = dbCollection.findOne(object);
         todoItem.setCreateTime(Long.valueOf(existedObject.get("createTime").toString()));
 
-        WriteResult wr = dbCollection.remove(object);
-        if (wr.getN() > 0) {
-            return create(todoItem);
-        }
-        return false;
+        dbCollection.remove(object);
+        return create(todoItem);
     }
 
     /**
@@ -91,8 +88,8 @@ public class TodoItemDao {
         DBObject object = new BasicDBObject();
         object.put("id", id);
 
-        WriteResult wr = dbCollection.remove(object);
-        return wr.getN() > 0;
+        db.getCollection(TodoConstants.COLLECTION_NAME).remove(object);
+        return true;
     }
 
     /**
@@ -112,11 +109,11 @@ public class TodoItemDao {
         cal.getTimeInMillis();
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        Date startDate = sdf.parse(cal.get(Calendar.YEAR) + "-" + cal.get(Calendar.MONTH) + "-" + cal.get(Calendar.DAY_OF_MONTH)
+        Date startDate = sdf.parse(cal.get(Calendar.YEAR) + "-" + (cal.get(Calendar.MONTH) + 1) + "-" + cal.get(Calendar.DAY_OF_MONTH)
             +" 00:00:00");
 
         cal = Calendar.getInstance();
-        Date endDate = sdf.parse(cal.get(Calendar.YEAR) + "-" + cal.get(Calendar.MONTH) + "-" + (cal.get(Calendar.DAY_OF_MONTH) + 1)
+        Date endDate = sdf.parse(cal.get(Calendar.YEAR) + "-" + (cal.get(Calendar.MONTH) + 1) + "-" + (cal.get(Calendar.DAY_OF_MONTH) + 1)
             + " 00:00:00");
 
         DBObject object = new BasicDBObject();
@@ -130,12 +127,12 @@ public class TodoItemDao {
         object.put("finished", finished);
 
         List<TodoItem> todoItemList = new ArrayList<TodoItem>();
-        DBCursor cursor = dbCollection.find(object);
+        DBCursor cursor = db.getCollection(TodoConstants.COLLECTION_NAME).find(object);
         while(cursor.hasNext()) {
             DBObject dbObject = cursor.next();
 
             TodoItem todoItem = new TodoItem();
-            todoItem.setId(dbObject.get("id").toString());
+            todoItem.setId(dbObject.get("_id").toString());
             todoItem.setContent(dbObject.get("content").toString());
             todoItem.setComment(dbObject.get("comment") != null?dbObject.get("comment").toString():"");
             todoItem.setModifyTime(Long.valueOf(dbObject.get("modifyTime").toString()));

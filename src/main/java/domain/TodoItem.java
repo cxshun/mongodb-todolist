@@ -31,12 +31,12 @@ public class TodoItem {
 	/**
 	 * create time
 	 */
-	private long createTime;
+	private long createTime = System.currentTimeMillis();
 	
 	/**
 	 * modify time about the todo item
 	 */
-	private long modifyTime;
+	private long modifyTime = System.currentTimeMillis();
 
 	/**
 	 * is finished or not
@@ -78,7 +78,7 @@ public class TodoItem {
         this.finished = finished;
     }
 
-    public String setId() {
+    public String getId() {
 		return id;
 	}
 

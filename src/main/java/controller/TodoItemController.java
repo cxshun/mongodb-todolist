@@ -35,9 +35,7 @@ public class TodoItemController extends HttpServlet{
                 todoItem.setContent(req.getParameter("content"));
                 todoItem.setComment(req.getParameter("comment"));
 
-                if (todoItemService.create(todoItem)) {
-                    req.getRequestDispatcher("").forward(req, resp);
-                }
+                todoItemService.create(todoItem);
                 break;
             case "update":
                 todoItem.setTitle(req.getParameter("title"));
@@ -45,14 +43,10 @@ public class TodoItemController extends HttpServlet{
                 todoItem.setComment(req.getParameter("comment"));
                 todoItem.setId(req.getParameter("id"));
 
-                if (!todoItemService.update(todoItem)) {
-                    return;
-                }
+                todoItemService.update(todoItem);
                 break;
             case "delete":
-                if (!todoItemService.delete(req.getParameter("id"))) {
-                    return;
-                }
+                todoItemService.delete(req.getParameter("id"));
                 break;
         }
 

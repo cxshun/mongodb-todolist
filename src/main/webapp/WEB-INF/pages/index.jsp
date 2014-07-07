@@ -13,6 +13,9 @@
   <head>
     <link rel="stylesheet" href='<c:url value="/assets/bootstrap/css/bootstrap-theme.min.css" />' />
     <link rel="stylesheet" href='<c:url value="/assets/bootstrap/css/bootstrap.min.css" /> '/>
+    <script type="text/javascript" >
+        days = ${days},finished = ${finished};
+    </script>
     <script type="text/javascript" src='<c:url value="/assets/js/jquery-1.8.2.min.js" />' ></script>
     <script type="text/javascript" src='<c:url value="/assets/js/jquery.form.js" />' ></script>
     <script type="text/javascript" src='<c:url value="/assets/bootstrap/js/bootstrap.min.js" />' ></script>
@@ -22,36 +25,29 @@
   </head>
   <body>
     <div class="container-fluid">
-        <ul class="nav nav-tabs" id="list">
-            <li class="active" id="today">
-                <a href="#">Today</a>
-                <table class="table table-striped">
-                    <c:forEach items="${todoItemList}" var="todoItem">
-                        <tr>
-                            <td><input type="checkbox" onclick="click2Finish(${todoItem.id})"/></td>
-                            <td>${todoItem.title}</td>
-                            <td><date:timeStamp2Date value="${todoItem.predictFinishTime}" pattern="yyyy-MM-dd" /></td>
-                            <td><span class="glyphicon glyphicon-remove" onclick="click2Delete(${todoItem.id})"/></td>
-                        </tr>
-                    </c:forEach>
-                </table>
-            </li>
-            <li id="three_days">
-               <a href="#">3 days</a>
-               <table class="table table-striped">
-
-               </table>
-            </li>
-            <li id="seven_days">
-                <a href="#">7 days</a>
-                <table class="table table-striped">
-
-                </table>
-            </li>
+        <ul class="nav nav-tabs" role="tablist" id="todo-tab">
+            <li><a href='<c:url value="/todoItem?action=list&days=0&finished=0" />' id="today">Today</a></li>
+            <li><a href='<c:url value="/todoItem?action=list&days=3&finished=0" />' id="3day">3 days</a></li>
+            <li><a href='<c:url value="/todoItem?action=list&days=7&finished=0" />' id="7day">7 days</a></li>
         </ul>
-        <button type="button" class="btn btn-lg btn-primary" data-toggle="modal" data-target="#createDialog">Add task</button>
     </div>
 
+    <div class="tab-content">
+        <div class="tab-pane active" >
+            <table class="table table-striped" id="todo-table">
+                <c:forEach items="${todoItemList}" var="todoItem">
+                    <tr>
+                        <td><input type="checkbox" onclick="click2Finish(${todoItem.id})"/></td>
+                        <td>${todoItem.title}</td>
+                        <td><date:timeStamp2Date value="${todoItem.predictFinishTime}" pattern="yyyy-MM-dd" /></td>
+                        <td><span class="glyphicon glyphicon-remove" onclick="click2Delete(${todoItem.id})"/></td>
+                    </tr>
+                </c:forEach>
+            </table>
+        </div>
+    </div>
+
+    <button type="button" class="btn btn-lg btn-primary" data-toggle="modal" data-target="#createDialog">Add task</button>
 
     <div class="modal fade" role="dialog" id="createDialog">
         <div class="modal-dialog">

@@ -2,12 +2,20 @@
  * Created by chenxiaoshun on 14-6-29.
  */
 $(document).ready(function() {
-    $("#content a").click(function(e){
+    click2Save();
+
+    $("#todo-tab a").click(function() {
         e.preventDefault();
         $(this).tab("show");
     })
 
-    click2Save();
+    if (days == 0) {
+        $("#todo-tab a[id='today']").parent().addClass("active");
+    } else if (days == 3) {
+        $("#todo-tab a[id='3day']").parent().addClass("active");
+    } else if (days == 7) {
+        $("#todo-tab a[id='7day']").parent().addClass("active");
+    }
 });
 
 
