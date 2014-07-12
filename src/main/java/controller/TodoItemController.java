@@ -48,6 +48,8 @@ public class TodoItemController extends HttpServlet{
             case "delete":
                 todoItemService.delete(req.getParameter("id"));
                 break;
+            case "finish":
+                todoItem
         }
 
         int days = Integer.valueOf(req.getParameter("days"));

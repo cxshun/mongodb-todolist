@@ -53,4 +53,13 @@ public class TodoItemService {
         return todoItemDao.getList(days, finished);
     }
 
+    /**
+     * finish the task by id
+     * @param id task id
+     * @return
+     */
+    public boolean finish(String id) {
+        return todoItemDao.finish(id);
+    }
+
 }

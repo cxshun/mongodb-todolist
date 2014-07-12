@@ -71,7 +71,17 @@ public class TodoItemDao {
         DBCollection dbCollection = db.getCollection(TodoConstants.COLLECTION_NAME);
         //set old createTime to the new object,in order to make it like update
         DBObject existedObject = dbCollection.findOne(object);
-        todoItem.setCreateTime(Long.valueOf(existedObject.get("createTime").toString()));
+
+        TodoItem newTodoItem = new TodoItem();
+        newTodoItem.setCreateTime(Long.valueOf(existedObject.get("createTime").toString()));
+        newTodoItem.setComment(todoItem.getComment());
+        newTodoItem.setPredictFinishTime(Long.valueOf(existedObject.get("predictFinishTime").toString()));
+        newTodoItem.setTitle(existedObject.get("title").toString());
+        newTodoItem.setContent(todoItem.getContent());
+        newTodoItem.setCreateTime(Long.valueOf(existedObject.get("createTime").toString()));
+        newTodoItem.setModifyTime(Long.valueOf(existedObject.get("modifyTime").toString()));
+        newTodoItem.setFinished(Integer.valueOf(existedObject.get("finish").toString()));
+        newTodoItem.setDeleted(Integer.valueOf(existedObject.get("deleted").toString()));
 
         dbCollection.remove(object);
         return create(todoItem);
@@ -79,16 +89,17 @@ public class TodoItemDao {
 
     /**
      * Set task as finish
-     * @param todoItem
+     * @param id    task id
      * @return
      */
-    public boolean finish(TodoItem todoItem) {
+    public boolean finish(String id) {
         DBObject object = new BasicDBObject();
-        object.put("id", todoItem.getId());
+        object.put("id", id);
 
         DBCollection dbCollection = db.getCollection(TodoConstants.COLLECTION_NAME);
         DBObject existedObject = dbCollection.findOne(object);
 
+        TodoItem todoItem = new TodoItem();
         todoItem.setComment(existedObject.get("comment").toString());
         todoItem.setPredictFinishTime(Long.valueOf(existedObject.get("predictFinishTime").toString()));
         todoItem.setTitle(existedObject.get("title").toString());
