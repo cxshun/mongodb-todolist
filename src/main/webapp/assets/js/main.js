@@ -20,18 +20,14 @@ $(document).ready(function() {
 
 
 function click2Finish(todoItemId, days, finished) {
-    $.get("/todoItem?action=finished&days="+days+"&finished="+finished, function(data) {
-        if (data["result"] == true) {
-           location.reload();
-        }
+    $.get("/todoItem?action=finished&days="+days+"&finished="+finished+"&todoItemId="+todoItemId, function(data) {
+        location.reload();
     })
 }
 
 function click2Delete(todoItemId, days, finished) {
-    $.get("/todoItem?action=deleted&days="+days+"&finished="+finished, function(data) {
-        if (data["result"] == true) {
-            location.reload();
-        }
+    $.get("/todoItem?action=deleted&days="+days+"&finished="+finished+"&todoItemId="+todoItemId, function(data) {
+        location.reload();
     })
 }
 
@@ -40,7 +36,6 @@ function click2Save() {
         success: showResponse
     };
     $("#createForm").submit(function() {
-        alert("xxxx");
         $(this).ajaxSubmit(options);
         return false;
     })

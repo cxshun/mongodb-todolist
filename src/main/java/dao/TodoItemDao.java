@@ -66,12 +66,37 @@ public class TodoItemDao {
      */
     public boolean update(TodoItem todoItem) {
         DBObject object = new BasicDBObject();
-        object.put("id", todoItem);
+        object.put("id", todoItem.getId());
 
         DBCollection dbCollection = db.getCollection(TodoConstants.COLLECTION_NAME);
         //set old createTime to the new object,in order to make it like update
         DBObject existedObject = dbCollection.findOne(object);
         todoItem.setCreateTime(Long.valueOf(existedObject.get("createTime").toString()));
+
+        dbCollection.remove(object);
+        return create(todoItem);
+    }
+
+    /**
+     * Set task as finish
+     * @param todoItem
+     * @return
+     */
+    public boolean finish(TodoItem todoItem) {
+        DBObject object = new BasicDBObject();
+        object.put("id", todoItem.getId());
+
+        DBCollection dbCollection = db.getCollection(TodoConstants.COLLECTION_NAME);
+        DBObject existedObject = dbCollection.findOne(object);
+
+        todoItem.setComment(existedObject.get("comment").toString());
+        todoItem.setPredictFinishTime(Long.valueOf(existedObject.get("predictFinishTime").toString()));
+        todoItem.setTitle(existedObject.get("title").toString());
+        todoItem.setContent(existedObject.get("content").toString());
+        todoItem.setCreateTime(Long.valueOf(existedObject.get("createTime").toString()));
+        todoItem.setModifyTime(Long.valueOf(existedObject.get("modifyTime").toString()));
+        todoItem.setFinished(1);
+        todoItem.setDeleted(0);
 
         dbCollection.remove(object);
         return create(todoItem);
@@ -104,7 +129,7 @@ public class TodoItemDao {
      */
     public List<TodoItem> getList(int days, int finished) throws ParseException {
         Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DAY_OF_MONTH, -days);
+        cal.add(Calendar.DAY_OF_MONTH, -(days - 1));
 
         cal.getTimeInMillis();
 
@@ -122,7 +147,7 @@ public class TodoItemDao {
         basicDBList.add(new BasicDBObject("createTime", new BasicDBObject("$gte", startDate.getTime())));
         basicDBList.add(new BasicDBObject("modifyTime", new BasicDBObject("$lte", endDate.getTime())));
 
-        object.put("$or", basicDBList);
+        object.put("$and", basicDBList);
         object.put("deleted", TodoConstants.DeleteFlag.NOT_DELETED);
         object.put("finished", finished);
 
