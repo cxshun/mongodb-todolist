@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.IdentityHashMap;
 import java.util.List;
@@ -34,6 +35,12 @@ public class TodoItemController extends HttpServlet{
                 todoItem.setTitle(req.getParameter("title"));
                 todoItem.setContent(req.getParameter("content"));
                 todoItem.setComment(req.getParameter("comment"));
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                try {
+                    todoItem.setPredictFinishTime(sdf.parse(req.getParameter("finish_time")).getTime());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
 
                 todoItemService.create(todoItem);
                 break;

@@ -25,12 +25,11 @@ import java.util.*;
 public class TodoItemDao {
 
     private static DB db = null;
-
-    private Gson gson = new Gson();
+    private static MongoClient client = null;
 
     static {
         try {
-            MongoClient client = new MongoClient("localhost", 27017);
+            client = new MongoClient("localhost", 27017);
             db = client.getDB(TodoConstants.DB_NAME);
         } catch (UnknownHostException e) {
             e.printStackTrace();
@@ -47,8 +46,8 @@ public class TodoItemDao {
         object.put("title", todoItem.getTitle());
         object.put("content", todoItem.getContent());
         object.put("comment", todoItem.getComment());
-        object.put("finished", TodoConstants.FinishFlag.NOT_FINISHED);
-        object.put("deleted", TodoConstants.DeleteFlag.NOT_DELETED);
+        object.put("finished", todoItem.getFinished());
+        object.put("deleted", todoItem.getDeleted());
         object.put("predictFinishTime", todoItem.getPredictFinishTime());
         object.put("createTime", todoItem.getCreateTime());
         object.put("modifyTime", todoItem.getModifyTime());
@@ -100,7 +99,6 @@ public class TodoItemDao {
         DBObject existedObject = dbCollection.findOne(object);
 
         TodoItem todoItem = new TodoItem();
-        todoItem.setComment(existedObject.get("comment").toString());
         todoItem.setPredictFinishTime(Long.valueOf(existedObject.get("predictFinishTime").toString()));
         todoItem.setTitle(existedObject.get("title").toString());
         todoItem.setContent(existedObject.get("content").toString());
@@ -122,7 +120,7 @@ public class TodoItemDao {
      */
     public boolean delete(String id) {
         DBObject object = new BasicDBObject();
-        object.put("id", id);
+        object.put("_id", id);
 
         db.getCollection(TodoConstants.COLLECTION_NAME).remove(object);
         return true;
@@ -156,13 +154,14 @@ public class TodoItemDao {
         BasicDBList basicDBList = new BasicDBList();
 
         basicDBList.add(new BasicDBObject("createTime", new BasicDBObject("$gte", startDate.getTime())));
-        basicDBList.add(new BasicDBObject("modifyTime", new BasicDBObject("$lte", endDate.getTime())));
+        basicDBList.add(new BasicDBObject("createTime", new BasicDBObject("$lte", endDate.getTime())));
 
         object.put("$and", basicDBList);
         object.put("deleted", TodoConstants.DeleteFlag.NOT_DELETED);
         object.put("finished", finished);
 
         List<TodoItem> todoItemList = new ArrayList<TodoItem>();
+
         DBCursor cursor = db.getCollection(TodoConstants.COLLECTION_NAME).find(object);
         while(cursor.hasNext()) {
             DBObject dbObject = cursor.next();

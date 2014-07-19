@@ -9,7 +9,7 @@ $(document).ready(function() {
         $(this).tab("show");
     })
 
-    if (days == 0) {
+    if (days == 1) {
         $("#todo-tab a[id='today']").parent().addClass("active");
     } else if (days == 3) {
         $("#todo-tab a[id='3day']").parent().addClass("active");
@@ -20,31 +20,26 @@ $(document).ready(function() {
 
 
 function click2Finish(todoItemId, days, finished) {
-    $.get("/todoItem?action=finished&days="+days+"&finished="+finished+"&todoItemId="+todoItemId, function(data) {
+    $.get("/todoItem?action=finish&days="+days+"&finished="+finished+"&id="+todoItemId, function(data) {
         location.reload();
     })
 }
 
 function click2Delete(todoItemId, days, finished) {
-    $.get("/todoItem?action=deleted&days="+days+"&finished="+finished+"&todoItemId="+todoItemId, function(data) {
+    $.get("/todoItem?action=delete&days="+days+"&finished="+finished+"&id="+todoItemId, function(data) {
         location.reload();
     })
 }
 
 function click2Save() {
     var options = {
-        success: showResponse
-    };
+        success : function() {
+            location.reload();
+        }
+    }
     $("#createForm").submit(function() {
         $(this).ajaxSubmit(options);
         return false;
     })
-}
-
-function showResponse(responseData, updateTarget) {
-    if (responseData.result == true) {
-        $(updateTarget).html(responseData["message"]);
-        return true;
-    }
 }
 

@@ -26,7 +26,7 @@
   <body>
     <div class="container-fluid">
         <ul class="nav nav-tabs" role="tablist" id="todo-tab">
-            <li><a href='<c:url value="/todoItem?action=list&days=0&finished=0" />' id="today">Today</a></li>
+            <li><a href='<c:url value="/todoItem?action=list&days=1&finished=0" />' id="today">Today</a></li>
             <li><a href='<c:url value="/todoItem?action=list&days=3&finished=0" />' id="3day">3 days</a></li>
             <li><a href='<c:url value="/todoItem?action=list&days=7&finished=0" />' id="7day">7 days</a></li>
         </ul>
@@ -37,10 +37,10 @@
             <table class="table table-striped" id="todo-table">
                 <c:forEach items="${todoItemList}" var="todoItem">
                     <tr>
-                        <td><input type="checkbox" onclick="click2Finish(${todoItem.id})"/></td>
+                        <td><input type="checkbox" onclick="click2Finish('${todoItem.id}', ${days}, ${finished})"/></td>
                         <td>${todoItem.title}</td>
                         <td><date:timeStamp2Date value="${todoItem.predictFinishTime}" pattern="yyyy-MM-dd" /></td>
-                        <td><span class="glyphicon glyphicon-remove" onclick="click2Delete(${todoItem.id})"/></td>
+                        <td><span class="glyphicon glyphicon-remove" onclick="click2Delete('${todoItem.id}', ${days}, ${finished})"/></td>
                     </tr>
                 </c:forEach>
             </table>
@@ -65,6 +65,10 @@
                         <div class="form-group">
                             <label for="content">Content</label>
                             <textarea class="form-control" name="content" id="content" placeholder="Input content" ></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="finish_time">Predict Finish Date</label>
+                            <input class="form-control" name="finish_time" id="finish_time" placeholder="Input finish_time" ></textarea>
                         </div>
                         <input type="hidden" value="${days}" name="days" />
                         <input type="hidden" value="${finished}" name="finished" />
