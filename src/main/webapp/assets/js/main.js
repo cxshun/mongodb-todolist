@@ -20,9 +20,11 @@ $(document).ready(function() {
 
 
 function click2Finish(todoItemId, days, finished) {
-    $.get("/todoItem?action=finish&days="+days+"&finished="+finished+"&id="+todoItemId, function(data) {
-        location.reload();
-    })
+    if ($(this).attr("checked") == true) {
+        $.get("/todoItem?action=finish&days="+days+"&finished="+finished+"&id="+todoItemId, function(data) {
+            location.reload();
+        })
+    }
 }
 
 function click2Delete(todoItemId, days, finished) {

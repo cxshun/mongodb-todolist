@@ -10,6 +10,7 @@ import com.sun.tools.javac.comp.Todo;
 import constants.TodoConstants;
 import domain.TodoItem;
 import org.bson.BSONObject;
+import org.bson.types.ObjectId;
 
 import java.lang.Object;
 import java.lang.Override;
@@ -93,7 +94,7 @@ public class TodoItemDao {
      */
     public boolean finish(String id) {
         DBObject object = new BasicDBObject();
-        object.put("id", id);
+        object.put("_id", new ObjectId(id));
 
         DBCollection dbCollection = db.getCollection(TodoConstants.COLLECTION_NAME);
         DBObject existedObject = dbCollection.findOne(object);
@@ -104,8 +105,8 @@ public class TodoItemDao {
         todoItem.setContent(existedObject.get("content").toString());
         todoItem.setCreateTime(Long.valueOf(existedObject.get("createTime").toString()));
         todoItem.setModifyTime(Long.valueOf(existedObject.get("modifyTime").toString()));
-        todoItem.setFinished(1);
-        todoItem.setDeleted(0);
+        todoItem.setFinished(TodoConstants.FinishFlag.FINISHED);
+        todoItem.setDeleted(TodoConstants.DeleteFlag.NOT_DELETED);
 
         dbCollection.remove(object);
         return create(todoItem);
@@ -120,7 +121,7 @@ public class TodoItemDao {
      */
     public boolean delete(String id) {
         DBObject object = new BasicDBObject();
-        object.put("_id", id);
+        object.put("_id", new ObjectId(id));
 
         db.getCollection(TodoConstants.COLLECTION_NAME).remove(object);
         return true;
